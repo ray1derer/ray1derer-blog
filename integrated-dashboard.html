@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS 블로그 관리자 - 대시보드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 다크모드 스타일 */
+        .dark {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+        .dark .bg-white { background-color: #2d2d2d; }
+        .dark .text-gray-900 { color: #e0e0e0; }
+        .dark .text-gray-700 { color: #b0b0b0; }
+        .dark .bg-gray-50 { background-color: #3d3d3d; }
+        .dark .hover\:bg-gray-50:hover { background-color: #4d4d4d; }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        
+        /* 그라디언트 배경 */
+        .gradient-bg {
+            background: linear-gradient(135deg, #FF9900 0%, #232F3E 100%);
+        }
+        
+        /* 카드 호버 효과 */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body x-data="{ 
+    darkMode: localStorage.getItem('darkMode') === 'true',
+    sidebarOpen: true,
+    mobileMenuOpen: false,
+    currentPage: 'dashboard'
+}" 
+:class="darkMode ? 'dark' : ''"
+x-init="$watch('darkMode', value => localStorage.setItem('darkMode', value))">
+
+    <!-- 로딩 중 표시 (로그인 체크) -->
+    <div id="loading-screen" class="fixed inset-0 bg-white dark:bg-gray-900 z-50 flex items-center justify-center">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+            <p class="mt-4 text-gray-600 dark:text-gray-400">로딩 중...</p>
+        </div>
+    </div>
+
+    <div class="flex h-screen bg-gray-100 dark:bg-gray-900">
+        <!-- 사이드바 -->
+        <aside :class="sidebarOpen ? 'w-64' : 'w-20'" 
+               class="transition-all duration-300 bg-white dark:bg-gray-800 shadow-xl relative hidden md:block">
+            <!-- 로고 영역 -->
+            <div class="h-16 flex items-center justify-between px-4 gradient-bg text-white">
+                <div class="flex items-center space-x-3">
+                    <i class="fab fa-aws text-2xl"></i>
+                    <span x-show="sidebarOpen" class="font-bold text-lg">AWS Blog</span>
+                </div>
+                <button @click="sidebarOpen = !sidebarOpen" class="text-white hover:bg-white/20 p-2 rounded">
+                    <i :class="sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'" class="fas"></i>
+                </button>
+            </div>
+
+            <!-- 메뉴 -->
+            <nav class="mt-6 px-4">
+                <!-- 대시보드 -->
+                <a href="#" @click="currentPage = 'dashboard'" 
+                   :class="currentPage === 'dashboard' ? 'bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-300' : ''"
+                   class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors mb-2">
+                    <i class="fas fa-chart-line text-xl"></i>
+                    <span x-show="sidebarOpen">대시보드</span>
+                </a>
+
+                <!-- 게시글 관리 -->
+                <div x-data="{ postsOpen: false }" class="mb-2">
+                    <button @click="postsOpen = !postsOpen" 
+                            class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-file-alt text-xl"></i>
+                            <span x-show="sidebarOpen">게시글 관리</span>
+                        </div>
+                        <i x-show="sidebarOpen" :class="postsOpen ? 'fa-chevron-up' : 'fa-chevron-down'" class="fas text-sm"></i>
+                    </button>
+                    <div x-show="postsOpen && sidebarOpen" x-transition class="ml-8 mt-2 space-y-2">
+                        <a href="#" class="block p-2 text-sm hover:text-orange-600">글쓰기</a>
+                        <a href="#" class="block p-2 text-sm hover:text-orange-600">글목록</a>
+                        <a href="#" class="block p-2 text-sm hover:text-orange-600">카테고리</a>
+                        <a href="#" class="block p-2 text-sm hover:text-orange-600">태그</a>
+                    </div>
+                </div>
+
+                <!-- AI 기능 -->
+                <div x-data="{ aiOpen: false }" class="mb-2">
+                    <button @click="aiOpen = !aiOpen" 
+                            class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-robot text-xl"></i>
+                            <span x-show="sidebarOpen">AI 기능</span>
+                        </div>
+                        <i x-show="sidebarOpen" :class="aiOpen ? 'fa-chevron-up' : 'fa-chevron-down'" class="fas text-sm"></i>
+                    </button>
+                    <div x-show="aiOpen && sidebarOpen" x-transition class="ml-8 mt-2 space-y-2">
+                        <a href="#" class="block p-2 text-sm hover:text-orange-600">AI 작가</a>
+                        <a href="#" class="block p-2 text-sm hover:text-orange-600">콘텐츠 아이디어</a>
+                        <a href="#" class="block p-2 text-sm hover:text-orange-600">벌크 생성기</a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- AI 상태 표시 -->
+            <div x-show="sidebarOpen" class="absolute bottom-4 left-4 right-4 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg p-3 text-white">
+                <div class="text-xs font-semibold mb-1">AI 엔진 상태</div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm">활성화</span>
+                    <div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 모바일 사이드바 -->
+        <div x-show="mobileMenuOpen" @click="mobileMenuOpen = false" 
+             class="fixed inset-0 bg-black/50 z-40 md:hidden"></div>
+        <aside x-show="mobileMenuOpen" x-transition 
+               class="fixed left-0 top-0 h-full w-64 bg-white dark:bg-gray-800 shadow-xl z-50 md:hidden">
+            <!-- 모바일 메뉴 내용 (데스크톱과 동일) -->
+        </aside>
+
+        <!-- 메인 콘텐츠 -->
+        <div class="flex-1 flex flex-col">
+            <!-- 헤더 -->
+            <header class="h-16 bg-white dark:bg-gray-800 shadow-sm flex items-center justify-between px-6">
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                
+                <h1 class="text-xl font-semibold">대시보드</h1>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- 다크모드 토글 -->
+                    <button @click="darkMode = !darkMode" 
+                            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i :class="darkMode ? 'fa-sun' : 'fa-moon'" class="fas"></i>
+                    </button>
+                    
+                    <!-- 프로필 -->
+                    <div class="flex items-center space-x-2">
+                        <img src="https://via.placeholder.com/32" alt="Profile" class="w-8 h-8 rounded-full">
+                        <span class="text-sm font-medium">관리자</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 대시보드 콘텐츠 -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- 통계 카드 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover fade-in">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">총 게시글</p>
+                                <p class="text-2xl font-bold mt-1" id="total-posts">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-file-alt text-blue-600 dark:text-blue-300"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover fade-in" style="animation-delay: 0.1s">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">총 조회수</p>
+                                <p class="text-2xl font-bold mt-1" id="total-views">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-eye text-green-600 dark:text-green-300"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover fade-in" style="animation-delay: 0.2s">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">카테고리</p>
+                                <p class="text-2xl font-bold mt-1" id="total-categories">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-folder text-purple-600 dark:text-purple-300"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover fade-in" style="animation-delay: 0.3s">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">댓글</p>
+                                <p class="text-2xl font-bold mt-1" id="total-comments">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-comments text-orange-600 dark:text-orange-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 최근 게시글 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 fade-in" style="animation-delay: 0.4s">
+                    <h2 class="text-lg font-semibold mb-4">최근 게시글</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="text-left text-sm text-gray-500 dark:text-gray-400 border-b dark:border-gray-700">
+                                    <th class="pb-3">제목</th>
+                                    <th class="pb-3">카테고리</th>
+                                    <th class="pb-3">작성일</th>
+                                    <th class="pb-3">조회수</th>
+                                    <th class="pb-3"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="posts-list">
+                                <!-- 동적으로 생성됨 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 페이지네이션 -->
+                    <div class="mt-4 flex justify-center space-x-2" id="pagination">
+                        <!-- 동적으로 생성됨 -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 동적 데이터 시스템 -->
+    <script src="/js/blog-data-manager.js"></script>
+    <script>
+        // 로그인 체크 (간단한 예시)
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            // 실제로는 로그인 페이지로 리다이렉트
+            console.log('로그인이 필요합니다');
+            // window.location.href = '/login.html';
+        }
+
+        // 로딩 화면 제거
+        setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+        }, 1000);
+
+        // 페이지 로드 시 데이터 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof blogData !== 'undefined') {
+                blogData.updateUI();
+            }
+        });
+    </script>
+</body>
+</html>
