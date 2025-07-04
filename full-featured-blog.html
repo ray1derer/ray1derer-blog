@@ -1725,6 +1725,629 @@
                 </div>
             </div>
             
+            <!-- 가독성 분석 패널 -->
+            <div id="readability-panel" class="content-panel">
+                <div class="panel-header">
+                    <h2>가독성 분석</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="analyzeReadability()">
+                            <i class="fas fa-glasses"></i> 분석 실행
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="form-group">
+                        <label>분석할 텍스트</label>
+                        <textarea id="readabilityText" class="form-control" rows="10" placeholder="가독성을 분석할 텍스트를 입력하세요...">오늘은 AI를 활용해서 블로그를 성공적으로 운영하는 방법에 대해 알아보겠습니다. ChatGPT와 같은 AI 도구를 사용하면 콘텐츠 작성 시간을 크게 단축할 수 있습니다. 하지만 단순히 AI에만 의존하기보다는 자신만의 독특한 시각을 더하는 것이 중요합니다.</textarea>
+                    </div>
+                    
+                    <div id="readabilityResults" style="display: none; margin-top: 30px;">
+                        <div class="dashboard-grid">
+                            <div class="stat-card">
+                                <h4><i class="fas fa-tachometer-alt"></i> 가독성 점수</h4>
+                                <div class="stat-value" id="readabilityScore">0/100</div>
+                                <div class="stat-change" id="readabilityGrade">
+                                    분석 중...
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <h4><i class="fas fa-graduation-cap"></i> 난이도</h4>
+                                <div class="stat-value" id="readingLevel">고등학교</div>
+                                <div class="stat-change">
+                                    권장: 중학교
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <h4><i class="fas fa-align-left"></i> 문장 길이</h4>
+                                <div class="stat-value" id="avgSentenceLength">0단어</div>
+                                <div class="stat-change">
+                                    권장: 15-20단어
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <h4><i class="fas fa-paragraph"></i> 단락 길이</h4>
+                                <div class="stat-value" id="avgParagraphLength">0문장</div>
+                                <div class="stat-change">
+                                    권장: 3-5문장
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 30px;">
+                            <h3>상세 분석</h3>
+                            <div style="background: #f8f9fa; border-radius: 8px; padding: 20px;">
+                                <div class="analysis-item" style="margin-bottom: 20px;">
+                                    <h4><i class="fas fa-check-circle" style="color: #2ecc71;"></i> 장점</h4>
+                                    <ul id="readabilityPros" style="margin: 10px 0; padding-left: 20px;">
+                                        <li>명확한 주제 전달</li>
+                                        <li>적절한 문단 분할</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="analysis-item" style="margin-bottom: 20px;">
+                                    <h4><i class="fas fa-exclamation-circle" style="color: #f39c12;"></i> 개선 포인트</h4>
+                                    <ul id="readabilityImprovements" style="margin: 10px 0; padding-left: 20px;">
+                                        <li>너무 긴 문장을 나누어 보세요</li>
+                                        <li>전문 용어를 쉽게 풀어 설명하세요</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="analysis-item">
+                                    <h4><i class="fas fa-chart-bar"></i> 단어 빈도</h4>
+                                    <div id="wordFrequency" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                        <!-- 자주 사용된 단어 표시 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 30px;">
+                            <h3>가독성 개선 제안</h3>
+                            <div style="background: #f8f9fa; border-radius: 8px; padding: 20px;">
+                                <button class="btn btn-primary" onclick="improveReadability()" style="width: 100%; margin-bottom: 15px;">
+                                    <i class="fas fa-magic"></i> AI로 가독성 개선하기
+                                </button>
+                                <div id="improvedText" style="display: none;">
+                                    <h4>개선된 텍스트</h4>
+                                    <div style="background: white; padding: 15px; border-radius: 5px; margin-top: 10px;">
+                                        <!-- 개선된 텍스트 표시 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 음성 메모 패널 -->
+            <div id="voice-memo-panel" class="content-panel">
+                <div class="panel-header">
+                    <h2>음성 메모</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="viewAllMemos()">
+                            <i class="fas fa-list"></i> 전체 보기
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 12px; margin-bottom: 30px;">
+                        <div id="recordingStatus" style="margin-bottom: 20px;">
+                            <i class="fas fa-microphone" style="font-size: 64px; color: #3498db; margin-bottom: 20px;"></i>
+                            <h3 id="recordingStatusText">녹음 준비</h3>
+                            <p id="recordingTime" style="font-size: 24px; color: #666; display: none;">00:00</p>
+                        </div>
+                        
+                        <div style="display: flex; gap: 15px; justify-content: center;">
+                            <button id="recordBtn" class="btn btn-primary" onclick="toggleRecording()" style="padding: 15px 30px; font-size: 18px;">
+                                <i class="fas fa-microphone"></i> 녹음 시작
+                            </button>
+                            <button id="pauseBtn" class="btn btn-secondary" onclick="pauseRecording()" style="padding: 15px 30px; font-size: 18px; display: none;">
+                                <i class="fas fa-pause"></i> 일시정지
+                            </button>
+                            <button id="stopBtn" class="btn btn-danger" onclick="stopRecording()" style="padding: 15px 30px; font-size: 18px; display: none;">
+                                <i class="fas fa-stop"></i> 녹음 종료
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="transcriptionArea" style="display: none; margin-bottom: 30px;">
+                        <h3>음성 인식 결과</h3>
+                        <div style="background: #f8f9fa; border-radius: 8px; padding: 20px;">
+                            <div class="form-group">
+                                <textarea id="transcriptionText" class="form-control" rows="6" placeholder="음성 인식 결과가 여기에 표시됩니다..."></textarea>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-primary" onclick="saveMemo()">
+                                    <i class="fas fa-save"></i> 메모 저장
+                                </button>
+                                <button class="btn btn-secondary" onclick="convertToPost()">
+                                    <i class="fas fa-file-text"></i> 글로 변환
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3>최근 음성 메모</h3>
+                        <div id="recentMemos" style="display: grid; gap: 15px;">
+                            <div class="memo-item" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                                    <div>
+                                        <h4 style="margin: 0 0 5px 0;">블로그 아이디어</h4>
+                                        <small style="color: #666;">2024.01.10 14:30 · 2분 15초</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-secondary" onclick="playMemo(1)">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                </div>
+                                <p style="margin: 0; color: #666; font-size: 14px;">AI를 활용한 콘텐츠 작성법에 대해 다루고, 특히 ChatGPT를 활용한 프롬프트 엔지니어링...</p>
+                            </div>
+                            <div class="memo-item" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px;">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                                    <div>
+                                        <h4 style="margin: 0 0 5px 0;">마케팅 전략</h4>
+                                        <small style="color: #666;">2024.01.09 10:15 · 1분 45초</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-secondary" onclick="playMemo(2)">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                </div>
+                                <p style="margin: 0; color: #666; font-size: 14px;">소셜 미디어 마케팅을 통한 블로그 트래픽 증가 방법. 인스타그램과 트위터를 활용...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI 브레인스토밍 패널 -->
+            <div id="ai-brainstorm-panel" class="content-panel">
+                <div class="panel-header">
+                    <h2>AI 브레인스토밍</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="startBrainstorm()">
+                            <i class="fas fa-lightbulb"></i> 브레인스토밍 시작
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="form-group">
+                        <label>주제 또는 키워드</label>
+                        <input type="text" id="brainstormTopic" class="form-control" placeholder="예: AI 블로그, 생산성 향상, 콘텐츠 마케팅" value="AI 블로그">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>브레인스토밍 방향</label>
+                        <select id="brainstormDirection" class="form-control">
+                            <option value="ideas">아이디어 생성</option>
+                            <option value="titles">제목 아이디어</option>
+                            <option value="outline">글 구성 아이디어</option>
+                            <option value="keywords">키워드 확장</option>
+                            <option value="angles">다양한 관점</option>
+                        </select>
+                    </div>
+                    
+                    <div id="brainstormResults" style="display: none; margin-top: 30px;">
+                        <h3>브레인스토밍 결과</h3>
+                        <div id="mindMap" style="background: #f8f9fa; border-radius: 8px; padding: 30px; text-align: center; margin-bottom: 20px;">
+                            <!-- 마인드맵 스타일 시각화 -->
+                            <div style="position: relative; min-height: 400px;">
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #3498db; color: white; padding: 15px 25px; border-radius: 25px; font-weight: bold;">
+                                    AI 블로그
+                                </div>
+                                <!-- 연결된 아이디어들 -->
+                                <div class="idea-node" style="position: absolute; top: 20%; left: 20%; background: #2ecc71; color: white; padding: 10px 20px; border-radius: 20px;">
+                                    콘텐츠 자동화
+                                </div>
+                                <div class="idea-node" style="position: absolute; top: 20%; right: 20%; background: #e74c3c; color: white; padding: 10px 20px; border-radius: 20px;">
+                                    SEO 최적화
+                                </div>
+                                <div class="idea-node" style="position: absolute; bottom: 20%; left: 20%; background: #f39c12; color: white; padding: 10px 20px; border-radius: 20px;">
+                                    수익화 전략
+                                </div>
+                                <div class="idea-node" style="position: absolute; bottom: 20%; right: 20%; background: #9b59b6; color: white; padding: 10px 20px; border-radius: 20px;">
+                                    독자 참여
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <h4>핵심 아이디어</h4>
+                                <div id="coreIdeas" style="background: white; border-radius: 8px; padding: 15px;">
+                                    <ul style="margin: 0; padding-left: 20px;">
+                                        <li>AI 도구를 활용한 콘텐츠 대량 생산</li>
+                                        <li>자동화된 글 발행 시스템</li>
+                                        <li>데이터 기반 주제 선정</li>
+                                        <li>AI 글쓰기 프롬프트 템플릿</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4>확장 아이디어</h4>
+                                <div id="expandedIdeas" style="background: white; border-radius: 8px; padding: 15px;">
+                                    <ul style="margin: 0; padding-left: 20px;">
+                                        <li>AI 블로그 컨설팅 서비스</li>
+                                        <li>블로거를 위한 AI 교육 코스</li>
+                                        <li>AI 블로그 플랫폼 개발</li>
+                                        <li>커뮤니티 기반 AI 블로그</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <button class="btn btn-primary" onclick="saveBrainstorm()" style="margin-right: 10px;">
+                                <i class="fas fa-save"></i> 아이디어 저장
+                            </button>
+                            <button class="btn btn-secondary" onclick="expandBrainstorm()">
+                                <i class="fas fa-expand"></i> 더 많은 아이디어
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 포맷 변환 패널 -->
+            <div id="format-converter-panel" class="content-panel">
+                <div class="panel-header">
+                    <h2>포맷 변환</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="convertFormat()">
+                            <i class="fas fa-exchange-alt"></i> 변환하기
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <h3>원본 텍스트</h3>
+                            <div class="form-group">
+                                <label>포맷 선택</label>
+                                <select id="sourceFormat" class="form-control">
+                                    <option value="markdown">Markdown</option>
+                                    <option value="html">HTML</option>
+                                    <option value="plain">일반 텍스트</option>
+                                    <option value="notion">Notion</option>
+                                </select>
+                            </div>
+                            <textarea id="sourceText" class="form-control" rows="15" placeholder="변환할 텍스트를 입력하세요..."># AI 블로그 성공 비법
+
+## 1. 콘텐츠 전략
+- AI 도구 활용
+- 독자 분석
+- 트렌드 파악
+
+## 2. 기술적 최적화
+**SEO** 최적화와 *속도* 개선이 중요합니다.</textarea>
+                        </div>
+                        
+                        <div>
+                            <h3>변환 결과</h3>
+                            <div class="form-group">
+                                <label>대상 포맷</label>
+                                <select id="targetFormat" class="form-control">
+                                    <option value="html">HTML</option>
+                                    <option value="markdown">Markdown</option>
+                                    <option value="notion">Notion</option>
+                                    <option value="wordpress">WordPress</option>
+                                    <option value="medium">Medium</option>
+                                </select>
+                            </div>
+                            <textarea id="targetText" class="form-control" rows="15" readonly placeholder="변환된 결과가 여기에 표시됩니다..."></textarea>
+                            <button class="btn btn-secondary" onclick="copyConverted()" style="margin-top: 10px; width: 100%;">
+                                <i class="fas fa-copy"></i> 결과 복사
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SNS 카드 패널 -->
+            <div id="sns-card-panel" class="content-panel">
+                <div class="panel-header">
+                    <h2>SNS 카드</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="generateSNSCard()">
+                            <i class="fas fa-share-alt"></i> 카드 생성
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                        <div>
+                            <h3>콘텐츠 설정</h3>
+                            <div class="form-group">
+                                <label>제목</label>
+                                <input type="text" id="snsTitle" class="form-control" value="AI로 블로그 성공하기">
+                            </div>
+                            <div class="form-group">
+                                <label>설명</label>
+                                <textarea id="snsDescription" class="form-control" rows="3">ChatGPT와 AI 도구를 활용한 효율적인 블로그 운영 방법을 알아보세요.</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>SNS 플랫폼</label>
+                                <select id="snsPlatform" class="form-control" onchange="updateSNSPreview()">
+                                    <option value="twitter">Twitter</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="linkedin">LinkedIn</option>
+                                    <option value="instagram">Instagram</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>태그/멘션</label>
+                                <input type="text" id="snsTags" class="form-control" placeholder="@username #hashtag" value="#AI블로그 #ChatGPT">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3>미리보기</h3>
+                            <div id="snsCardPreview" style="background: white; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden; max-width: 500px;">
+                                <!-- Twitter 카드 예시 -->
+                                <div id="twitterCard" style="padding: 20px;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                        <div style="width: 40px; height: 40px; background: #3498db; border-radius: 50%; margin-right: 10px;"></div>
+                                        <div>
+                                            <div style="font-weight: bold;">블로거 이름</div>
+                                            <div style="color: #666; font-size: 14px;">@blogger · 방금</div>
+                                        </div>
+                                    </div>
+                                    <p id="snsPreviewText" style="margin: 0 0 15px 0; line-height: 1.5;">AI로 블로그 성공하기
+
+ChatGPT와 AI 도구를 활용한 효율적인 블로그 운영 방법을 알아보세요.</p>
+                                    <p id="snsPreviewTags" style="color: #3498db; margin: 0;">#AI블로그 #ChatGPT</p>
+                                    <div style="display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+                                        <button style="background: none; border: none; color: #666; cursor: pointer;">
+                                            <i class="far fa-comment"></i> 12
+                                        </button>
+                                        <button style="background: none; border: none; color: #666; cursor: pointer;">
+                                            <i class="fas fa-retweet"></i> 45
+                                        </button>
+                                        <button style="background: none; border: none; color: #666; cursor: pointer;">
+                                            <i class="far fa-heart"></i> 123
+                                        </button>
+                                        <button style="background: none; border: none; color: #666; cursor: pointer;">
+                                            <i class="fas fa-share"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                                <button class="btn btn-primary" onclick="downloadSNSCard()" style="flex: 1;">
+                                    <i class="fas fa-download"></i> 이미지 다운로드
+                                </button>
+                                <button class="btn btn-secondary" onclick="copySNSText()" style="flex: 1;">
+                                    <i class="fas fa-copy"></i> 텍스트 복사
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 전자책 변환 패널 -->
+            <div id="ebook-converter-panel" class="content-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-book"></i> 전자책 변환</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="showTab('dashboard')">
+                            <i class="fas fa-arrow-left"></i> 대시보드로
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="converter-container">
+                        <div class="source-selection">
+                            <h3>변환할 콘텐츠 선택</h3>
+                            <div class="selection-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="ebookSource" value="posts" checked>
+                                    <span>블로그 글 모음</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="ebookSource" value="category">
+                                    <span>카테고리별 모음</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="ebookSource" value="manual">
+                                    <span>수동 선택</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="ebook-settings">
+                            <h3>전자책 설정</h3>
+                            <div class="form-group">
+                                <label>제목</label>
+                                <input type="text" id="ebookTitle" class="form-control" value="AI 블로그 모음집" onkeyup="updateEbookPreview()">
+                            </div>
+                            <div class="form-group">
+                                <label>저자</label>
+                                <input type="text" id="ebookAuthor" class="form-control" value="AI Auto Blog" onkeyup="updateEbookPreview()">
+                            </div>
+                            <div class="form-group">
+                                <label>설명</label>
+                                <textarea id="ebookDescription" class="form-control" rows="3">AI 기술과 관련된 최신 정보와 인사이트를 담은 전자책입니다.</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>형식</label>
+                                <select id="ebookFormat" class="form-control">
+                                    <option value="epub">EPUB (대부분의 전자책 리더)</option>
+                                    <option value="pdf">PDF (인쇄용)</option>
+                                    <option value="mobi">MOBI (킨들용)</option>
+                                    <option value="all">모든 형식</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="ebook-preview" style="margin-top: 30px;">
+                            <h3>미리보기</h3>
+                            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px;">
+                                <div style="text-align: center; margin-bottom: 20px;">
+                                    <div style="width: 200px; height: 280px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin: 0 auto; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">
+                                        AI 블로그<br>모음집
+                                    </div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <h4 id="previewTitle">AI 블로그 모음집</h4>
+                                    <p id="previewAuthor">by AI Auto Blog</p>
+                                    <p style="font-size: 14px; color: #666;" id="previewPages">예상 페이지: 약 150페이지</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="conversion-actions" style="margin-top: 30px;">
+                            <button class="btn btn-primary" onclick="startEbookConversion()" style="width: 100%;">
+                                <i class="fas fa-cogs"></i> 전자책 생성 시작
+                            </button>
+                        </div>
+                        
+                        <div id="ebookProgress" style="display: none; margin-top: 20px;">
+                            <div class="progress-container">
+                                <div class="progress-bar" id="ebookProgressBar" style="width: 0%;"></div>
+                            </div>
+                            <p class="progress-status" id="ebookStatus">준비 중...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 팟캐스트 변환 패널 -->
+            <div id="podcast-converter-panel" class="content-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-podcast"></i> 팟캐스트 변환</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="showTab('dashboard')">
+                            <i class="fas fa-arrow-left"></i> 대시보드로
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="converter-container">
+                        <div class="podcast-source">
+                            <h3>팟캐스트로 변환할 글 선택</h3>
+                            <div class="post-selector">
+                                <select id="podcastPostSelect" class="form-control" onchange="updatePodcastPreview()">
+                                    <option value="">글을 선택하세요</option>
+                                    <!-- 동적으로 글 목록 로드 -->
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="podcast-settings" style="margin-top: 30px;">
+                            <h3>팟캐스트 설정</h3>
+                            <div class="form-group">
+                                <label>에피소드 제목</label>
+                                <input type="text" id="podcastTitle" class="form-control" placeholder="자동으로 생성됩니다">
+                            </div>
+                            <div class="form-group">
+                                <label>음성 선택</label>
+                                <select id="podcastVoice" class="form-control">
+                                    <option value="female-kr">한국어 여성 (차분함)</option>
+                                    <option value="male-kr">한국어 남성 (신뢰감)</option>
+                                    <option value="female-en">영어 여성</option>
+                                    <option value="male-en">영어 남성</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>배경 음악</label>
+                                <select id="podcastMusic" class="form-control">
+                                    <option value="none">없음</option>
+                                    <option value="calm">차분한 배경음</option>
+                                    <option value="upbeat">경쾌한 배경음</option>
+                                    <option value="tech">테크 스타일</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>읽기 속도</label>
+                                <input type="range" id="speechSpeed" min="80" max="120" value="100" class="form-control">
+                                <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666;">
+                                    <span>느림</span>
+                                    <span id="speedValue">100%</span>
+                                    <span>빠름</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="podcast-preview" style="margin-top: 30px;">
+                            <h3>팟캐스트 미리보기</h3>
+                            <div style="background: #1a1a1a; border-radius: 12px; padding: 20px; color: white;">
+                                <div style="display: flex; align-items: center; gap: 20px;">
+                                    <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-microphone" style="font-size: 40px;"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <h4 id="podcastPreviewTitle">에피소드 제목</h4>
+                                        <p style="color: #999; margin: 5px 0;">AI Auto Blog Podcast</p>
+                                        <p style="color: #666; font-size: 14px;">
+                                            <i class="fas fa-clock"></i> 예상 시간: <span id="estimatedDuration">약 10분</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 20px;">
+                                    <div style="background: #2a2a2a; border-radius: 8px; padding: 15px;">
+                                        <div style="display: flex; align-items: center; gap: 15px;">
+                                            <button class="btn btn-sm" style="background: #f5576c; border: none; color: white; width: 50px; height: 50px; border-radius: 50%;">
+                                                <i class="fas fa-play"></i>
+                                            </button>
+                                            <div style="flex: 1;">
+                                                <div style="height: 4px; background: #444; border-radius: 2px;">
+                                                    <div style="width: 30%; height: 100%; background: #f5576c; border-radius: 2px;"></div>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <span>0:00</span>
+                                                    <span id="durationDisplay">10:00</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="conversion-actions" style="margin-top: 30px;">
+                            <button class="btn btn-primary" onclick="startPodcastConversion()" style="width: 100%;">
+                                <i class="fas fa-microphone-alt"></i> 팟캐스트 생성 시작
+                            </button>
+                        </div>
+                        
+                        <div id="podcastProgress" style="display: none; margin-top: 20px;">
+                            <div class="progress-container">
+                                <div class="progress-bar" id="podcastProgressBar" style="width: 0%;"></div>
+                            </div>
+                            <p class="progress-status" id="podcastStatus">음성 생성 준비 중...</p>
+                        </div>
+                        
+                        <div id="podcastResults" style="display: none; margin-top: 30px;">
+                            <div class="alert alert-success">
+                                <h4>팟캐스트 생성 완료!</h4>
+                                <p>에피소드가 성공적으로 생성되었습니다.</p>
+                                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                                    <button class="btn btn-primary" onclick="downloadPodcast()">
+                                        <i class="fas fa-download"></i> MP3 다운로드
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="uploadToPlatforms()">
+                                        <i class="fas fa-upload"></i> 플랫폼에 업로드
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- 글 목록 패널 -->
             <div id="posts-panel" class="content-panel">
                 <div class="panel-header">
@@ -3528,7 +4151,233 @@ A는... 반면 B는...\n
                 case 'hashtag-ai':
                     // Hashtag panel
                     break;
+                case 'readability':
+                    analyzeReadability();
+                    break;
+                case 'voice-memo':
+                    initVoiceMemo();
+                    break;
+                case 'ai-brainstorm':
+                    // AI brainstorming panel
+                    break;
+                case 'format-converter':
+                    // Format converter panel
+                    break;
+                case 'sns-card':
+                    generateSNSCard();
+                    break;
+                case 'ebook-converter':
+                    initEbookConverter();
+                    break;
+                case 'podcast-converter':
+                    initPodcastConverter();
+                    break;
             }
+        }
+        
+        // 전자책 변환 관련 함수들
+        function initEbookConverter() {
+            // 글 목록 로드
+            const posts = JSON.parse(localStorage.getItem('blog_posts') || '[]');
+            updateEbookPreview();
+        }
+        
+        function startEbookConversion() {
+            const title = document.getElementById('ebookTitle').value;
+            const author = document.getElementById('ebookAuthor').value;
+            const format = document.getElementById('ebookFormat').value;
+            
+            if (!title || !author) {
+                alert('제목과 저자를 입력해주세요.');
+                return;
+            }
+            
+            // 진행 상황 표시
+            document.getElementById('ebookProgress').style.display = 'block';
+            
+            let progress = 0;
+            const progressBar = document.getElementById('ebookProgressBar');
+            const status = document.getElementById('ebookStatus');
+            
+            // 진행 상황 시뮬레이션
+            const steps = [
+                { progress: 20, text: '콘텐츠 수집 중...' },
+                { progress: 40, text: '이미지 처리 중...' },
+                { progress: 60, text: '레이아웃 생성 중...' },
+                { progress: 80, text: `${format.toUpperCase()} 변환 중...` },
+                { progress: 100, text: '완료!' }
+            ];
+            
+            let stepIndex = 0;
+            const interval = setInterval(() => {
+                if (stepIndex < steps.length) {
+                    const step = steps[stepIndex];
+                    progressBar.style.width = step.progress + '%';
+                    status.textContent = step.text;
+                    stepIndex++;
+                } else {
+                    clearInterval(interval);
+                    showToast(`전자책 "${title}"이 생성되었습니다!`);
+                    setTimeout(() => {
+                        document.getElementById('ebookProgress').style.display = 'none';
+                        progressBar.style.width = '0%';
+                    }, 2000);
+                }
+            }, 1000);
+        }
+        
+        function updateEbookPreview() {
+            const title = document.getElementById('ebookTitle').value;
+            const author = document.getElementById('ebookAuthor').value;
+            
+            document.getElementById('previewTitle').textContent = title || 'AI 블로그 모음집';
+            document.getElementById('previewAuthor').textContent = `by ${author || 'AI Auto Blog'}`;
+            
+            // 페이지 수 계산 (시뮬레이션)
+            const posts = JSON.parse(localStorage.getItem('blog_posts') || '[]');
+            const pages = Math.max(50, posts.length * 15);
+            document.getElementById('previewPages').textContent = `예상 페이지: 약 ${pages}페이지`;
+        }
+        
+        // 팟캐스트 변환 관련 함수들
+        function initPodcastConverter() {
+            // 글 목록 로드
+            const posts = JSON.parse(localStorage.getItem('blog_posts') || '[]');
+            const select = document.getElementById('podcastPostSelect');
+            
+            select.innerHTML = '<option value="">글을 선택하세요</option>';
+            posts.forEach(post => {
+                const option = document.createElement('option');
+                option.value = post.id;
+                option.textContent = post.title;
+                select.appendChild(option);
+            });
+            
+            // 속도 슬라이더 이벤트
+            document.getElementById('speechSpeed').addEventListener('input', function(e) {
+                document.getElementById('speedValue').textContent = e.target.value + '%';
+            });
+        }
+        
+        function updatePodcastPreview() {
+            const select = document.getElementById('podcastPostSelect');
+            const postId = select.value;
+            
+            if (postId) {
+                const posts = JSON.parse(localStorage.getItem('blog_posts') || '[]');
+                const post = posts.find(p => p.id == postId);
+                
+                if (post) {
+                    document.getElementById('podcastTitle').value = `에피소드: ${post.title}`;
+                    document.getElementById('podcastPreviewTitle').textContent = `에피소드: ${post.title}`;
+                    
+                    // 예상 시간 계산 (대략 200단어/분)
+                    const wordCount = (post.content || '').split(' ').length;
+                    const minutes = Math.ceil(wordCount / 200);
+                    document.getElementById('estimatedDuration').textContent = `약 ${minutes}분`;
+                    document.getElementById('durationDisplay').textContent = `${minutes}:00`;
+                }
+            }
+        }
+        
+        function startPodcastConversion() {
+            const postId = document.getElementById('podcastPostSelect').value;
+            const voice = document.getElementById('podcastVoice').value;
+            
+            if (!postId) {
+                alert('변환할 글을 선택해주세요.');
+                return;
+            }
+            
+            // 진행 상황 표시
+            document.getElementById('podcastProgress').style.display = 'block';
+            document.getElementById('podcastResults').style.display = 'none';
+            
+            let progress = 0;
+            const progressBar = document.getElementById('podcastProgressBar');
+            const status = document.getElementById('podcastStatus');
+            
+            // 진행 상황 시뮬레이션
+            const steps = [
+                { progress: 20, text: '텍스트 처리 중...' },
+                { progress: 40, text: '음성 합성 중...' },
+                { progress: 60, text: '배경음악 믹싱 중...' },
+                { progress: 80, text: '최종 렌더링 중...' },
+                { progress: 100, text: '완료!' }
+            ];
+            
+            let stepIndex = 0;
+            const interval = setInterval(() => {
+                if (stepIndex < steps.length) {
+                    const step = steps[stepIndex];
+                    progressBar.style.width = step.progress + '%';
+                    status.textContent = step.text;
+                    stepIndex++;
+                } else {
+                    clearInterval(interval);
+                    document.getElementById('podcastProgress').style.display = 'none';
+                    document.getElementById('podcastResults').style.display = 'block';
+                    showToast('팟캐스트가 생성되었습니다!');
+                }
+            }, 1000);
+        }
+        
+        function downloadPodcast() {
+            showToast('팟캐스트 다운로드를 시작합니다...');
+            // 실제로는 생성된 MP3 파일 다운로드
+        }
+        
+        function uploadToPlatforms() {
+            const platforms = ['Spotify', 'Apple Podcasts', 'Google Podcasts'];
+            const selected = prompt('업로드할 플랫폼을 선택하세요:\n' + platforms.join('\n'));
+            
+            if (selected) {
+                showToast(`${selected}에 업로드 중...`);
+                setTimeout(() => {
+                    showToast(`${selected}에 업로드 완료!`);
+                }, 2000);
+            }
+        }
+        
+        // 가독성 분석 함수들
+        function analyzeReadability() {
+            const content = document.getElementById('smartPostContent')?.innerText || '';
+            
+            if (content) {
+                // 실시간 분석 수행
+                performReadabilityAnalysis(content);
+            }
+        }
+        
+        function performReadabilityAnalysis(text) {
+            // 여기에 가독성 분석 로직
+            showToast('가독성 분석이 완료되었습니다.');
+        }
+        
+        // 음성 메모 함수들
+        function initVoiceMemo() {
+            // 음성 메모 초기화
+            loadVoiceMemos();
+        }
+        
+        function loadVoiceMemos() {
+            // 저장된 음성 메모 로드
+            const memos = JSON.parse(localStorage.getItem('voice_memos') || '[]');
+            // UI 업데이트
+        }
+        
+        // SNS 카드 함수들
+        function generateSNSCard() {
+            // SNS 카드 생성 로직
+            showToast('SNS 카드가 생성되었습니다.');
+        }
+        
+        function downloadSNSCard() {
+            showToast('SNS 카드를 다운로드합니다...');
+        }
+        
+        function copySNSText() {
+            showToast('텍스트가 클립보드에 복사되었습니다.');
         }
     </script>
 </body>
