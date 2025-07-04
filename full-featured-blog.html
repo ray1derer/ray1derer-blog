@@ -11,6 +11,9 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
     
+    <!-- Enhanced Category Manager -->
+    <script src="js/enhanced-category-manager.js" defer></script>
+    
     <style>
         /* 추가 스타일 */
         .sidebar {
@@ -143,6 +146,136 @@
         .stat-change.down {
             color: #e74c3c;
         }
+        
+        /* 카테고리 트리 스타일 */
+        .category-tree {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .category-tree.collapsed {
+            display: none;
+        }
+        
+        .category-item {
+            margin: 2px 0;
+        }
+        
+        .category-node {
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .category-node:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .category-node .toggle-icon {
+            font-size: 10px;
+            margin-right: 8px;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        
+        .category-node .no-toggle {
+            width: 18px;
+            display: inline-block;
+        }
+        
+        .category-icon {
+            margin-right: 8px;
+            color: #95a5a6;
+        }
+        
+        .category-name {
+            flex: 1;
+            color: #ecf0f1;
+            font-size: 13px;
+        }
+        
+        .category-count {
+            color: #7f8c8d;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+        
+        .category-actions {
+            display: none;
+            gap: 5px;
+        }
+        
+        .category-node:hover .category-actions {
+            display: flex;
+        }
+        
+        .category-actions .btn-icon {
+            background: none;
+            border: none;
+            color: #95a5a6;
+            cursor: pointer;
+            padding: 2px 5px;
+            border-radius: 3px;
+            transition: all 0.2s;
+        }
+        
+        .category-actions .btn-icon:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ecf0f1;
+        }
+        
+        /* 카테고리 관리 패널 스타일 */
+        .category-manager-container {
+            padding: 20px;
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .category-tree-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 400px;
+        }
+        
+        .category-tree-container .category-node {
+            background: white;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 5px;
+        }
+        
+        .category-tree-container .category-name {
+            color: #2c3e50;
+        }
+        
+        .add-category-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .add-category-form input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .add-category-form select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 150px;
+        }
     </style>
 </head>
 <body>
@@ -237,11 +370,24 @@
                     </div>
                     <ul class="nav-items">
                         <li><a href="#" onclick="showTab('posts')"><i class="fas fa-list"></i> 전체 글</a></li>
+                        <li><a href="#" onclick="showTab('category-manager')"><i class="fas fa-folder-tree"></i> 카테고리 관리</a></li>
                         <li><a href="#" onclick="showTab('drafts')"><i class="fas fa-file"></i> 임시저장 <span class="badge">5</span></a></li>
                         <li><a href="#" onclick="showTab('scheduled')"><i class="fas fa-calendar-check"></i> 예약 발행</a></li>
                         <li><a href="#" onclick="showTab('series')"><i class="fas fa-layer-group"></i> 시리즈 관리</a></li>
                         <li><a href="#" onclick="showTab('versions')"><i class="fas fa-history"></i> 버전 관리</a></li>
                     </ul>
+                </div>
+                
+                <!-- 카테고리 트리 -->
+                <div class="nav-section">
+                    <div class="nav-header" onclick="toggleSection(this)">
+                        <i class="fas fa-sitemap"></i>
+                        <span>카테고리별 보기</span>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="nav-items" id="sidebarCategoryTree" style="padding: 10px;">
+                        <!-- 카테고리 트리가 여기에 동적으로 로드됩니다 -->
+                    </div>
                 </div>
                 
                 <!-- 콘텐츠 재활용 -->
@@ -2613,6 +2759,63 @@ ChatGPT와 AI 도구를 활용한 효율적인 블로그 운영 방법을 알아
                     </div>
                 </div>
             </div>
+            
+            <!-- 카테고리 관리 패널 -->
+            <div id="category-manager-panel" class="content-panel">
+                <div class="panel-header">
+                    <h2>카테고리 관리</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="updateCategoryTreeUI()">
+                            <i class="fas fa-sync"></i> 새로고침
+                        </button>
+                        <button class="btn btn-primary" onclick="showAddCategoryForm()">
+                            <i class="fas fa-plus"></i> 카테고리 추가
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="category-manager-container">
+                        <!-- 카테고리 추가 폼 -->
+                        <div class="add-category-form" id="addCategoryForm" style="display: none;">
+                            <input type="text" id="newCategoryName" placeholder="새 카테고리 이름">
+                            <select id="parentCategorySelect">
+                                <option value="">최상위 카테고리</option>
+                                <!-- 동적으로 로드됨 -->
+                            </select>
+                            <button class="btn btn-primary" onclick="addNewCategory()">추가</button>
+                            <button class="btn btn-secondary" onclick="hideAddCategoryForm()">취소</button>
+                        </div>
+                        
+                        <!-- 카테고리 트리 컨테이너 -->
+                        <div class="category-tree-container" id="categoryTreeContainer">
+                            <!-- 카테고리 트리가 여기에 동적으로 로드됩니다 -->
+                        </div>
+                        
+                        <!-- 카테고리 통계 -->
+                        <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                                <h4 style="margin-bottom: 10px; color: #666;">
+                                    <i class="fas fa-folder"></i> 전체 카테고리
+                                </h4>
+                                <div style="font-size: 24px; font-weight: bold; color: #2c3e50;" id="totalCategories">0</div>
+                            </div>
+                            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                                <h4 style="margin-bottom: 10px; color: #666;">
+                                    <i class="fas fa-file-alt"></i> 카테고리별 평균 글 수
+                                </h4>
+                                <div style="font-size: 24px; font-weight: bold; color: #3498db;" id="avgPostsPerCategory">0</div>
+                            </div>
+                            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                                <h4 style="margin-bottom: 10px; color: #666;">
+                                    <i class="fas fa-layer-group"></i> 최대 깊이
+                                </h4>
+                                <div style="font-size: 24px; font-weight: bold; color: #2ecc71;" id="maxCategoryDepth">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
         
         <!-- 퀵 액션 바 -->
@@ -4124,6 +4327,10 @@ A는... 반면 B는...\n
                 case 'categories':
                     loadCategories();
                     break;
+                case 'category-manager':
+                    updateCategoryTreeUI();
+                    updateCategoryStats();
+                    break;
                 case 'ideas-board':
                     loadIdeas();
                     break;
@@ -4379,6 +4586,125 @@ A는... 반면 B는...\n
         function copySNSText() {
             showToast('텍스트가 클립보드에 복사되었습니다.');
         }
+        
+        // ===== 카테고리 관리 함수들 =====
+        
+        // 카테고리 추가 폼 표시/숨기기
+        function showAddCategoryForm() {
+            const form = document.getElementById('addCategoryForm');
+            const select = document.getElementById('parentCategorySelect');
+            
+            // 부모 카테고리 옵션 업데이트
+            const manager = new EnhancedCategoryManager();
+            const categories = manager.getAllCategoriesFlat();
+            
+            select.innerHTML = '<option value="">최상위 카테고리</option>';
+            categories.forEach(cat => {
+                const prefix = cat.parentId ? '└ ' : '';
+                select.innerHTML += `<option value="${cat.id}">${prefix}${cat.name}</option>`;
+            });
+            
+            form.style.display = 'flex';
+            document.getElementById('newCategoryName').focus();
+        }
+        
+        function hideAddCategoryForm() {
+            document.getElementById('addCategoryForm').style.display = 'none';
+            document.getElementById('newCategoryName').value = '';
+            document.getElementById('parentCategorySelect').value = '';
+        }
+        
+        // 새 카테고리 추가
+        function addNewCategory() {
+            const nameInput = document.getElementById('newCategoryName');
+            const parentSelect = document.getElementById('parentCategorySelect');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                showToast('카테고리 이름을 입력하세요.', 'error');
+                return;
+            }
+            
+            const manager = new EnhancedCategoryManager();
+            manager.addCategory(name, parentSelect.value || null);
+            
+            hideAddCategoryForm();
+            updateCategoryTreeUI();
+            updateCategoryStats();
+            showToast('카테고리가 추가되었습니다!');
+        }
+        
+        // 카테고리 통계 업데이트
+        function updateCategoryStats() {
+            const manager = new EnhancedCategoryManager();
+            const allCategories = manager.getAllCategoriesFlat();
+            
+            // 전체 카테고리 수
+            document.getElementById('totalCategories').textContent = allCategories.length;
+            
+            // 카테고리별 평균 글 수
+            const totalPosts = allCategories.reduce((sum, cat) => sum + cat.count, 0);
+            const avgPosts = allCategories.length > 0 ? (totalPosts / allCategories.length).toFixed(1) : 0;
+            document.getElementById('avgPostsPerCategory').textContent = avgPosts;
+            
+            // 최대 깊이 계산
+            const calculateDepth = (categories, depth = 0) => {
+                let maxDepth = depth;
+                categories.forEach(cat => {
+                    if (cat.children && cat.children.length > 0) {
+                        const childDepth = calculateDepth(cat.children, depth + 1);
+                        maxDepth = Math.max(maxDepth, childDepth);
+                    }
+                });
+                return maxDepth;
+            };
+            
+            const maxDepth = calculateDepth(manager.categories);
+            document.getElementById('maxCategoryDepth').textContent = maxDepth;
+        }
+        
+        // 글 필터링 결과 표시
+        function displayFilteredPosts(posts, categoryName) {
+            showTab('posts');
+            
+            // 제목 업데이트
+            const postsPanel = document.getElementById('posts-panel');
+            const headerTitle = postsPanel.querySelector('.panel-header h2');
+            headerTitle.innerHTML = `<i class="fas fa-folder"></i> ${categoryName} 카테고리의 글`;
+            
+            // 글 목록 업데이트
+            const postsGrid = document.getElementById('postsGrid');
+            
+            if (posts.length === 0) {
+                postsGrid.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #999;">
+                        <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 10px;"></i>
+                        <p>이 카테고리에 글이 없습니다.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            postsGrid.innerHTML = posts.map(post => `
+                <div class="post-card">
+                    <h3>${post.title}</h3>
+                    <p>${post.content.substring(0, 150)}...</p>
+                    <div class="post-meta">
+                        <span><i class="fas fa-eye"></i> ${post.views || 0}</span>
+                        <span><i class="fas fa-heart"></i> ${post.likes || 0}</span>
+                        <span><i class="fas fa-comment"></i> ${post.comments || 0}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            showToast(`${categoryName} 카테고리의 글 ${posts.length}개를 표시합니다.`);
+        }
+        
+        // 페이지 로드 시 카테고리 트리 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCategoryTreeUI();
+            updateCategoryStats();
+        });
     </script>
 </body>
 </html>
