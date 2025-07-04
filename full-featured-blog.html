@@ -13,6 +13,7 @@
     
     <!-- Enhanced Category Manager -->
     <script src="js/enhanced-category-manager.js" defer></script>
+    <script src="sidebar-category-integration.js" defer></script>
     
     <style>
         /* 추가 스타일 */
@@ -381,6 +382,85 @@
         }
         .nav-header.active .fa-chevron-down {
             transform: rotate(180deg);
+        }
+
+        /* Command Palette Modal */
+        .command-palette-modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(28, 42, 56, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1050;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 15vh;
+        }
+        .command-palette-modal.show {
+            display: flex;
+        }
+        .command-palette-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #2c3e50;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .command-palette-input-wrapper {
+            padding: 12px;
+            border-bottom: 1px solid #34495e;
+            display: flex;
+            align-items: center;
+        }
+        .command-palette-input-wrapper .fa-search {
+            color: #95a5a6;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+        .command-palette-input-wrapper input {
+            width: 100%;
+            background: none;
+            border: none;
+            color: #ecf0f1;
+            font-size: 18px;
+            outline: none;
+        }
+        .command-palette-results {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .command-palette-results ul {
+            list-style: none;
+            padding: 8px;
+            margin: 0;
+        }
+        .command-palette-results li {
+            padding: 10px 15px;
+            color: #bdc3c7;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .command-palette-results li:hover,
+        .command-palette-results li.selected {
+            background-color: #3498db;
+            color: white;
+        }
+        .command-palette-results .item-icon {
+            margin-right: 10px;
+        }
+        .command-palette-results .item-category {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .command-palette-results li.selected .item-category {
+            color: #ecf0f1;
         }
     </style>
 </head>
@@ -4678,10 +4758,34 @@ A는... 반면 B는...\n
         
         // 페이지 로드 시 카테고리 트리 초기화
         document.addEventListener('DOMContentLoaded', () => {
+            // EnhancedCategoryManager 초기화
+            const manager = new EnhancedCategoryManager();
+            
+            // 사이드바 카테고리 트리 업데이트
+            const sidebarTree = document.getElementById('sidebarCategoryTree');
+            if (sidebarTree) {
+                sidebarTree.innerHTML = manager.renderCategoryTree();
+            }
+            
             updateCategoryTreeUI();
             updateCategoryStats();
         });
     </script>
+    <!-- Command Palette Modal -->
+    <div id="commandPaletteModal" class="command-palette-modal">
+        <div class="command-palette-container">
+            <div class="command-palette-input-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="commandPaletteInput" placeholder="Type a command or search...">
+            </div>
+            <div class="command-palette-results">
+                <ul id="commandPaletteResults">
+                    <!-- Search results will be populated here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <script>
         function toggleSection(header) {
             const content = header.nextElementSibling;
@@ -4695,9 +4799,129 @@ A는... 반면 B는...\n
 
         // Initialize Command Center functionality
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('Command Center Initialized');
-            // Placeholder for future dynamic functionalities
-            // e.g., Command Palette (Cmd+K), Contextual Tools updates
+            const commandPaletteModal = document.getElementById('commandPaletteModal');
+            const commandPaletteInput = document.getElementById('commandPaletteInput');
+            const commandPaletteResults = document.getElementById('commandPaletteResults');
+
+            const commands = [
+                { name: 'New Post', category: 'Action', icon: 'fa-pen-fancy', action: () => showTab('smart-write-panel') },
+                { name: 'View All Posts', category: 'Navigation', icon: 'fa-list', action: () => showTab('posts-panel') },
+                { name: 'Open Dashboard', category: 'Navigation', icon: 'fa-chart-pie', action: () => showTab('overview-panel') },
+                { name: 'AI Insights', category: 'Navigation', icon: 'fa-lightbulb', action: () => showTab('insights-panel') },
+                { name: 'Content Calendar', category: 'Navigation', icon: 'fa-calendar-alt', action: () => showTab('content-calendar-panel') },
+                { name: 'Automation Workflows', category: 'Navigation', icon: 'fa-cogs', action: () => showTab('automation-panel') },
+                { name: 'System Settings', category: 'Navigation', icon: 'fa-cog', action: () => showTab('settings-panel') },
+                { name: 'Run Backup', category: 'Action', icon: 'fa-database', action: () => alert('Running system backup...') },
+            ];
+
+            function renderResults(results) {
+                commandPaletteResults.innerHTML = '';
+                results.forEach((command, index) => {
+                    const li = document.createElement('li');
+                    li.classList.toggle('selected', index === 0);
+                    li.innerHTML = `
+                        <div>
+                            <i class="fas ${command.icon} item-icon"></i>
+                            <span>${command.name}</span>
+                        </div>
+                        <span class="item-category">${command.category}</span>
+                    `;
+                    li.addEventListener('click', () => {
+                        command.action();
+                        closeCommandPalette();
+                    });
+                    commandPaletteResults.appendChild(li);
+                });
+            }
+
+            function openCommandPalette() {
+                commandPaletteModal.classList.add('show');
+                commandPaletteInput.focus();
+                renderResults(commands); // Show all commands initially
+            }
+
+            function closeCommandPalette() {
+                commandPaletteModal.classList.remove('show');
+                commandPaletteInput.value = '';
+            }
+
+            commandPaletteInput.addEventListener('input', () => {
+                const query = commandPaletteInput.value.toLowerCase();
+                const filteredCommands = commands.filter(c => c.name.toLowerCase().includes(query));
+                renderResults(filteredCommands);
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                    e.preventDefault();
+                    openCommandPalette();
+                }
+                if (e.key === 'Escape' && commandPaletteModal.classList.contains('show')) {
+                    closeCommandPalette();
+                }
+            });
+            
+            commandPaletteModal.addEventListener('click', (e) => {
+                if (e.target === commandPaletteModal) {
+                    closeCommandPalette();
+                }
+            });
+
+            const contextualToolsContainer = document.querySelector('.contextual-tools .nav-items');
+            const contextualToolsHeader = document.querySelector('.contextual-tools .nav-header-static');
+
+            const contextualTools = {
+                'overview-panel': [
+                    { name: 'Refresh Dashboard', icon: 'fa-sync', action: () => alert('Refreshing dashboard...') },
+                    { name: 'Export Report', icon: 'fa-download', action: () => alert('Exporting report...') },
+                ],
+                'smart-write-panel': [
+                    { name: 'Real-time SEO Analysis', icon: 'fa-search-plus', action: () => {} },
+                    { name: 'Tone & Style Check', icon: 'fa-sliders-h', action: () => {} },
+                    { name: 'AI Thumbnail Generator', icon: 'fa-image', action: () => {} },
+                    { name: 'Hashtag Suggestions', icon: 'fa-hashtag', action: () => {} },
+                ],
+                'default': [
+                    { name: 'No tools available', icon: 'fa-ban', action: () => {} },
+                ]
+            };
+
+            function updateContextualTools(context) {
+                const tools = contextualTools[context] || contextualTools['default'];
+                contextualToolsHeader.textContent = `Context: ${context.replace('-panel', '')}`;
+                contextualToolsContainer.innerHTML = '';
+                tools.forEach(tool => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = '#';
+                    a.innerHTML = `<i class="fas ${tool.icon}"></i> ${tool.name}`;
+                    a.onclick = tool.action;
+                    li.appendChild(a);
+                    contextualToolsContainer.appendChild(li);
+                });
+            }
+
+            // This function handles showing the correct content panel
+            function showTab(tabId) {
+                // Hide all content panels
+                document.querySelectorAll('.content-panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+
+                // Show the selected content panel
+                const selectedPanel = document.getElementById(tabId);
+                if (selectedPanel) {
+                    selectedPanel.classList.add('active');
+                    console.log(`Successfully navigated to ${tabId}`);
+                    updateContextualTools(tabId);
+                } else {
+                    console.error(`Tab with id ${tabId} not found.`);
+                    updateContextualTools('default');
+                }
+            }
+
+            // Initial tool setup
+            updateContextualTools('overview-panel');
         });
     </script>
 </body>
