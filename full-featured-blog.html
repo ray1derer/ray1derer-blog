@@ -169,7 +169,7 @@
                     </div>
                     <ul class="nav-items">
                         <li><a href="#" onclick="showTab('overview')"><i class="fas fa-chart-line"></i> 종합 현황</a></li>
-                        <li><a href="#" onclick="showTab('insights')"><i class="fas fa-lightbulb"></i> AI 인사이트 <span class="badge new">NEW</span></a></li>
+                        <li><a href="#" onclick="showTab('smart-write')"><i class="fas fa-pen-fancy"></i> 글쓰기 <span class="badge new">NEW</span></a></li>
                         <li><a href="#" onclick="showTab('analytics')"><i class="fas fa-chart-bar"></i> 독자 분석</a></li>
                         <li><a href="#" onclick="showTab('trends')"><i class="fas fa-fire"></i> 트렌드 분석</a></li>
                     </ul>
@@ -989,11 +989,28 @@
                 console.error('DashboardManager not loaded - 기본 통계 표시');
                 
                 // 기본 통계 표시
+                const posts = JSON.parse(localStorage.getItem('blog_posts') || '[]');
+                const views = JSON.parse(localStorage.getItem('blog_views') || '{}');
+                const totalViews = Object.values(views).reduce((sum, v) => sum + v, 0);
+                const publishedPosts = posts.filter(p => p.status === 'published');
+                
+                // 평균 참여율 계산
+                let totalEngagement = 0;
+                let postCount = 0;
+                posts.forEach(post => {
+                    if (post.views > 0) {
+                        const engagement = ((post.likes || 0) + (post.comments || 0)) / post.views * 100;
+                        totalEngagement += engagement;
+                        postCount++;
+                    }
+                });
+                const avgEngagement = postCount > 0 ? (totalEngagement / postCount).toFixed(1) : 0;
+                
                 const stats = {
-                    totalViews: localStorage.getItem('blog_totalViews') || '1,234',
-                    publishedPosts: JSON.parse(localStorage.getItem('blog_posts') || '[]').filter(p => p.status === 'published').length,
-                    subscribers: localStorage.getItem('blog_subscribers') || '89',
-                    engagement: '7.5%'
+                    totalViews: totalViews.toLocaleString(),
+                    publishedPosts: publishedPosts.length,
+                    subscribers: localStorage.getItem('blog_subscribers') || '0',
+                    engagement: avgEngagement + '%'
                 };
                 
                 // 통계 카드 업데이트
@@ -1015,64 +1032,66 @@
                 // 최근 활동 표시
                 const recentActivity = document.getElementById('recentActivityList');
                 if (recentActivity) {
-                    recentActivity.innerHTML = `
-                        <div style="margin-bottom: 10px;">
-                            <strong>AI 글쓰기 도우미 사용</strong>
-                            <div style="font-size: 12px; color: #7f8c8d;">방금 전</div>
-                        </div>
-                        <div style="margin-bottom: 10px;">
-                            <strong>새 글 발행: "AI 시대의 블로깅"</strong>
-                            <div style="font-size: 12px; color: #7f8c8d;">2시간 전</div>
-                        </div>
-                        <div>
-                            <strong>카테고리 추가: "AI 트렌드"</strong>
-                            <div style="font-size: 12px; color: #7f8c8d;">오늘</div>
-                        </div>
-                    `;
+                    const recentPosts = posts.slice(-3).reverse();
+                    if (recentPosts.length > 0) {
+                        recentActivity.innerHTML = recentPosts.map(post => {
+                            const date = new Date(post.created);
+                            const timeAgo = getTimeAgo(date);
+                            return `
+                                <div style="margin-bottom: 10px;">
+                                    <strong>글 ${post.status === 'published' ? '발행' : '지언'}: "${post.title}"</strong>
+                                    <div style="font-size: 12px; color: #7f8c8d;">${timeAgo}</div>
+                                </div>
+                            `;
+                        }).join('');
+                    } else {
+                        recentActivity.innerHTML = '<p style="text-align: center; color: #999;">최근 활동이 없습니다.</p>';
+                    }
                 }
                 
                 // 인기 게시글 표시
                 const popularPosts = document.getElementById('popularPostsList');
                 if (popularPosts) {
-                    popularPosts.innerHTML = `
-                        <div style="margin-bottom: 10px;">
-                            <strong>1. ChatGPT 활용법 총정리</strong>
-                            <div style="font-size: 12px; color: #7f8c8d;">조회수 567</div>
-                        </div>
-                        <div style="margin-bottom: 10px;">
-                            <strong>2. AI 시대의 블로깅 전략</strong>
-                            <div style="font-size: 12px; color: #7f8c8d;">조회수 342</div>
-                        </div>
-                        <div>
-                            <strong>3. 옵시디언으로 지식 관리하기</strong>
-                            <div style="font-size: 12px; color: #7f8c8d;">조회수 289</div>
-                        </div>
-                    `;
+                    const sortedPosts = [...publishedPosts].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 3);
+                    if (sortedPosts.length > 0) {
+                        popularPosts.innerHTML = sortedPosts.map((post, index) => `
+                            <div style="margin-bottom: 10px;">
+                                <strong>${index + 1}. ${post.title}</strong>
+                                <div style="font-size: 12px; color: #7f8c8d;">조회수 ${post.views || 0}</div>
+                            </div>
+                        `).join('');
+                    } else {
+                        popularPosts.innerHTML = '<p style="text-align: center; color: #999;">게시글이 없습니다.</p>';
+                    }
                 }
                 
                 // 카테고리별 통계
                 const categoryStats = document.getElementById('categoryStats');
                 if (categoryStats) {
-                    categoryStats.innerHTML = `
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
-                            <div style="text-align: center; padding: 15px; background: white; border-radius: 8px;">
-                                <div style="font-size: 24px; font-weight: bold; color: #3498db;">15</div>
-                                <div style="font-size: 12px; color: #7f8c8d;">AI & 머신러닝</div>
+                    const categoryCount = {};
+                    posts.forEach(post => {
+                        if (post.category) {
+                            categoryCount[post.category] = (categoryCount[post.category] || 0) + 1;
+                        }
+                    });
+                    
+                    const categories = Object.entries(categoryCount).sort((a, b) => b[1] - a[1]);
+                    const colors = ['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6', '#1abc9c'];
+                    
+                    if (categories.length > 0) {
+                        categoryStats.innerHTML = `
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                                ${categories.map((cat, i) => `
+                                    <div style="text-align: center; padding: 15px; background: white; border-radius: 8px;">
+                                        <div style="font-size: 24px; font-weight: bold; color: ${colors[i % colors.length]};">${cat[1]}</div>
+                                        <div style="font-size: 12px; color: #7f8c8d;">${cat[0]}</div>
+                                    </div>
+                                `).join('')}
                             </div>
-                            <div style="text-align: center; padding: 15px; background: white; border-radius: 8px;">
-                                <div style="font-size: 24px; font-weight: bold; color: #2ecc71;">12</div>
-                                <div style="font-size: 12px; color: #7f8c8d;">생산성</div>
-                            </div>
-                            <div style="text-align: center; padding: 15px; background: white; border-radius: 8px;">
-                                <div style="font-size: 24px; font-weight: bold; color: #e74c3c;">8</div>
-                                <div style="font-size: 12px; color: #7f8c8d;">기술</div>
-                            </div>
-                            <div style="text-align: center; padding: 15px; background: white; border-radius: 8px;">
-                                <div style="font-size: 24px; font-weight: bold; color: #f39c12;">5</div>
-                                <div style="font-size: 12px; color: #7f8c8d;">리뷰</div>
-                            </div>
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        categoryStats.innerHTML = '<p style="text-align: center; color: #999;">카테고리가 없습니다.</p>';
+                    }
                 }
                 
                 return;
@@ -1678,6 +1697,21 @@ ${dashboard.getPopularPosts().map((post, i) => `${i+1}. ${post.title} (${post.vi
                     </button>
                 </div>
             ` + container.innerHTML;
+        }
+        
+        // 시간 차이 계산 함수
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diff = now - date;
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            
+            if (days > 0) return `${days}일 전`;
+            if (hours > 0) return `${hours}시간 전`;
+            if (minutes > 0) return `${minutes}분 전`;
+            return '방금 전';
         }
         
         function showToast(message, type = 'success') {
