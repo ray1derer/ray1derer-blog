@@ -936,6 +936,326 @@
                 </div>
             </div>
             
+            <!-- AI 템플릿 패널 -->
+            <div id="templates-panel" class="content-panel">
+                <div class="panel-header">
+                    <h2>AI 템플릿</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="createTemplate()">
+                            <i class="fas fa-plus"></i> 새 템플릿
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="dashboard-grid">
+                        <div class="template-card" onclick="useTemplate('tutorial')" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <i class="fas fa-graduation-cap" style="font-size: 24px; color: #3498db; margin-right: 10px;"></i>
+                                <h4 style="margin: 0;">튜토리얼 형식</h4>
+                            </div>
+                            <p style="color: #666; margin: 0 0 10px 0;">단계별로 설명하는 튜토리얼 글</p>
+                            <div style="font-size: 12px; color: #999;">
+                                <i class="fas fa-star" style="color: #f39c12;"></i> 인기 템플릿
+                            </div>
+                        </div>
+                        
+                        <div class="template-card" onclick="useTemplate('comparison')" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <i class="fas fa-balance-scale" style="font-size: 24px; color: #2ecc71; margin-right: 10px;"></i>
+                                <h4 style="margin: 0;">비교 분석</h4>
+                            </div>
+                            <p style="color: #666; margin: 0 0 10px 0;">두 가지 이상을 비교하는 글</p>
+                            <div style="font-size: 12px; color: #999;">
+                                <i class="fas fa-chart-line"></i> 참여율 높음
+                            </div>
+                        </div>
+                        
+                        <div class="template-card" onclick="useTemplate('howto')" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <i class="fas fa-tools" style="font-size: 24px; color: #e74c3c; margin-right: 10px;"></i>
+                                <h4 style="margin: 0;">How-To 가이드</h4>
+                            </div>
+                            <p style="color: #666; margin: 0 0 10px 0;">문제 해결 방법을 설명하는 글</p>
+                            <div style="font-size: 12px; color: #999;">
+                                <i class="fas fa-bookmark"></i> 독자 저장률 높음
+                            </div>
+                        </div>
+                        
+                        <div class="template-card" onclick="useTemplate('listicle')" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <i class="fas fa-list-ol" style="font-size: 24px; color: #f39c12; margin-right: 10px;"></i>
+                                <h4 style="margin: 0;">리스티클</h4>
+                            </div>
+                            <p style="color: #666; margin: 0 0 10px 0;">번호 목록으로 구성된 글</p>
+                            <div style="font-size: 12px; color: #999;">
+                                <i class="fas fa-share"></i> 공유율 높음
+                            </div>
+                        </div>
+                        
+                        <div class="template-card" onclick="useTemplate('review')" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <i class="fas fa-star-half-alt" style="font-size: 24px; color: #9b59b6; margin-right: 10px;"></i>
+                                <h4 style="margin: 0;">리뷰 형식</h4>
+                            </div>
+                            <p style="color: #666; margin: 0 0 10px 0;">제품/서비스를 평가하는 글</p>
+                            <div style="font-size: 12px; color: #999;">
+                                <i class="fas fa-thumbs-up"></i> 신뢰도 높음
+                            </div>
+                        </div>
+                        
+                        <div class="template-card" onclick="useTemplate('news')" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                                <i class="fas fa-newspaper" style="font-size: 24px; color: #1abc9c; margin-right: 10px;"></i>
+                                <h4 style="margin: 0;">뉴스 형식</h4>
+                            </div>
+                            <p style="color: #666; margin: 0 0 10px 0;">최신 소식을 전달하는 글</p>
+                            <div style="font-size: 12px; color: #999;">
+                                <i class="fas fa-clock"></i> 시의성 중요
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h3>내 템플릿</h3>
+                        <div id="myTemplates" style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 15px;">
+                            <p style="text-align: center; color: #999;">저장된 템플릿이 없습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 톤 매니저 패널 -->
+            <div id="tone-manager-panel" class="content-panel">
+                <div class="panel-header">
+                    <h2>톤 매니저</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="resetTone()">
+                            <i class="fas fa-undo"></i> 초기화
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                        <div>
+                            <h3>글쓰기 톤 설정</h3>
+                            <div style="background: #f8f9fa; border-radius: 8px; padding: 20px;">
+                                <div class="form-group">
+                                    <label>형식성</label>
+                                    <input type="range" id="formalityRange" min="0" max="100" value="50" oninput="updateToneValue('formality', this.value)">
+                                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666;">
+                                        <span>캐주얼</span>
+                                        <span id="formalityValue">50</span>
+                                        <span>포멀</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>감정</label>
+                                    <input type="range" id="emotionRange" min="0" max="100" value="50" oninput="updateToneValue('emotion', this.value)">
+                                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666;">
+                                        <span>객관적</span>
+                                        <span id="emotionValue">50</span>
+                                        <span>감정적</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>전문성</label>
+                                    <input type="range" id="expertiseRange" min="0" max="100" value="70" oninput="updateToneValue('expertise', this.value)">
+                                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666;">
+                                        <span>초보자</span>
+                                        <span id="expertiseValue">70</span>
+                                        <span>전문가</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>길이</label>
+                                    <input type="range" id="lengthRange" min="0" max="100" value="60" oninput="updateToneValue('length', this.value)">
+                                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666;">
+                                        <span>간결함</span>
+                                        <span id="lengthValue">60</span>
+                                        <span>상세함</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3>프리셋</h3>
+                            <div style="display: grid; gap: 10px;">
+                                <button class="tone-preset" onclick="applyTonePreset('professional')" style="padding: 15px; background: white; border: 1px solid #ddd; border-radius: 8px; text-align: left; cursor: pointer;">
+                                    <h4 style="margin: 0 0 5px 0; color: #2c3e50;">👔 전문가 톤</h4>
+                                    <p style="margin: 0; font-size: 14px; color: #666;">포멀하고 객관적인 전문가 톤</p>
+                                </button>
+                                
+                                <button class="tone-preset" onclick="applyTonePreset('friendly')" style="padding: 15px; background: white; border: 1px solid #ddd; border-radius: 8px; text-align: left; cursor: pointer;">
+                                    <h4 style="margin: 0 0 5px 0; color: #2c3e50;">😊 친근한 톤</h4>
+                                    <p style="margin: 0; font-size: 14px; color: #666;">캐주얼하고 따뜻한 톤</p>
+                                </button>
+                                
+                                <button class="tone-preset" onclick="applyTonePreset('educational')" style="padding: 15px; background: white; border: 1px solid #ddd; border-radius: 8px; text-align: left; cursor: pointer;">
+                                    <h4 style="margin: 0 0 5px 0; color: #2c3e50;">🎓 교육적 톤</h4>
+                                    <p style="margin: 0; font-size: 14px; color: #666;">자세하고 설명적인 톤</p>
+                                </button>
+                                
+                                <button class="tone-preset" onclick="applyTonePreset('casual')" style="padding: 15px; background: white; border: 1px solid #ddd; border-radius: 8px; text-align: left; cursor: pointer;">
+                                    <h4 style="margin: 0 0 5px 0; color: #2c3e50;">👍 캐주얼 톤</h4>
+                                    <p style="margin: 0; font-size: 14px; color: #666;">가볍고 유쾌한 톤</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h3>톤 미리보기</h3>
+                        <div style="background: #f8f9fa; border-radius: 8px; padding: 20px;">
+                            <p id="tonePreview" style="line-height: 1.8;">
+                                현재 설정된 톤으로 작성하면 이런 느낌의 글이 됩니다. 
+                                적당히 공식적이면서도 너무 딱딱하지 않고, 
+                                전문적인 내용을 다루면서도 이해하기 쉽게 설명합니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 스마트 리서치 패널 -->
+            <div id="research-panel" class="content-panel">
+                <div class="panel-header">
+                    <h2>스마트 리서치</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="startResearch()">
+                            <i class="fas fa-search"></i> 리서치 시작
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="form-group">
+                        <label>리서치 주제</label>
+                        <input type="text" id="researchTopic" class="form-control" placeholder="예: ChatGPT 활용법, AI 트렌드 2024">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>리서치 깊이</label>
+                        <select id="researchDepth" class="form-control">
+                            <option value="quick">빠른 조사 (5-10분)</option>
+                            <option value="standard" selected>표준 조사 (15-30분)</option>
+                            <option value="deep">심층 조사 (30분+)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>포함할 소스</label>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                            <label class="checkbox-label" style="display: flex; align-items: center;">
+                                <input type="checkbox" name="researchSources" value="web" checked>
+                                <span style="margin-left: 5px;">웹 검색</span>
+                            </label>
+                            <label class="checkbox-label" style="display: flex; align-items: center;">
+                                <input type="checkbox" name="researchSources" value="academic" checked>
+                                <span style="margin-left: 5px;">학술 논문</span>
+                            </label>
+                            <label class="checkbox-label" style="display: flex; align-items: center;">
+                                <input type="checkbox" name="researchSources" value="news" checked>
+                                <span style="margin-left: 5px;">뉴스 기사</span>
+                            </label>
+                            <label class="checkbox-label" style="display: flex; align-items: center;">
+                                <input type="checkbox" name="researchSources" value="social">
+                                <span style="margin-left: 5px;">소셜 미디어</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="researchProgress" style="display: none; margin-top: 20px;">
+                        <h3>리서치 진행 상황</h3>
+                        <div class="progress-bar" style="background: #e0e0e0; height: 20px; border-radius: 10px; overflow: hidden;">
+                            <div id="researchProgressBar" style="background: #3498db; height: 100%; width: 0%; transition: width 0.5s;"></div>
+                        </div>
+                        <p id="researchStatus" style="margin-top: 10px; text-align: center; color: #666;">'준비 중...</p>
+                    </div>
+                    
+                    <div id="researchResults" style="margin-top: 30px; display: none;">
+                        <h3>리서치 결과</h3>
+                        <div style="background: #f8f9fa; border-radius: 8px; padding: 20px;">
+                            <div id="researchSummary">
+                                <!-- 리서치 결과가 여기에 표시됩니다 -->
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4>참고 자료</h4>
+                            <div id="researchSources" style="display: grid; gap: 10px;">
+                                <!-- 참고 자료 리스트 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 팩트체크 패널 -->
+            <div id="fact-check-panel" class="content-panel">
+                <div class="panel-header">
+                    <h2>팩트체크</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="clearFactCheck()">
+                            <i class="fas fa-eraser"></i> 초기화
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="form-group">
+                        <label>검증할 내용</label>
+                        <textarea id="factCheckContent" class="form-control" rows="10" placeholder="팩트체크가 필요한 내용을 입력하세요...">팩트체크가 필요한 내용을 입력하세요...</textarea>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="runFactCheck()" style="width: 100%;">
+                        <i class="fas fa-check-double"></i> 팩트체크 실행
+                    </button>
+                    
+                    <div id="factCheckResults" style="margin-top: 30px; display: none;">
+                        <h3>검증 결과</h3>
+                        <div style="background: #f8f9fa; border-radius: 8px; padding: 20px;">
+                            <div class="fact-check-item" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #2ecc71;">
+                                <h4 style="margin: 0 0 10px 0; color: #2ecc71;">
+                                    <i class="fas fa-check-circle"></i> 확인됨
+                                </h4>
+                                <p style="margin: 0 0 10px 0;">"ChatGPT는 OpenAI에서 개발한 AI 모델이다"</p>
+                                <small style="color: #666;">출처: OpenAI 공식 웹사이트</small>
+                            </div>
+                            
+                            <div class="fact-check-item" style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #f39c12;">
+                                <h4 style="margin: 0 0 10px 0; color: #f39c12;">
+                                    <i class="fas fa-exclamation-triangle"></i> 부분적 사실
+                                </h4>
+                                <p style="margin: 0 0 10px 0;">"AI가 모든 직업을 대체할 것이다"</p>
+                                <small style="color: #666;">설명: 일부 직무는 자동화될 가능성이 있지만, 모든 직업을 대체하지는 않을 것으로 예상</small>
+                            </div>
+                            
+                            <div class="fact-check-item" style="padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #e74c3c;">
+                                <h4 style="margin: 0 0 10px 0; color: #e74c3c;">
+                                    <i class="fas fa-times-circle"></i> 사실과 다름
+                                </h4>
+                                <p style="margin: 0 0 10px 0;">"GPT-4는 무료로 사용할 수 있다"</p>
+                                <small style="color: #666;">사실: GPT-4는 유료 구독이 필요함 (ChatGPT Plus)</small>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4>신뢰도 점수</h4>
+                            <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; text-align: center;">
+                                <div style="font-size: 48px; font-weight: bold; color: #f39c12;">75%</div>
+                                <p style="margin: 10px 0 0 0; color: #666;">전체적으로 신뢰할 수 있지만 일부 수정이 필요합니다</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- 글 목록 패널 -->
             <div id="posts-panel" class="content-panel">
                 <div class="panel-header">
@@ -2110,6 +2430,311 @@ ${dashboard.getPopularPosts().map((post, i) => `${i+1}. ${post.title} (${post.vi
             showToast('트렌드 데이터가 업데이트되었습니다.');
         }
         
+        // 템플릿 관련 함수들
+        function useTemplate(templateType) {
+            const templates = {
+                tutorial: {
+                    title: '튜토리얼 제목을 입력하세요',
+                    content: `## 소개\n
+이 튜토리얼에서는...\n
+## 준비물\n
+- 필요한 도구\n- 기본 지식\n
+## 단계별 진행\n
+### 1단계: 기본 설정\n
+첫 번째 단계에서는...\n
+### 2단계: 핵심 기능 구현\n
+두 번째 단계에서는...\n
+## 결론\n
+이제 여러분은...`
+                },
+                comparison: {
+                    title: 'A vs B 비교 분석',
+                    content: `## 개요\n
+오늘은 A와 B를 비교해보겠습니다.\n
+## 비교 기준\n
+- 성능\n- 가격\n- 사용성\n- 지원\n
+## 상세 비교\n
+### 성능 비교\n
+A는... 반면 B는...\n
+### 가격 비교\n
+가격 측면에서...\n
+## 결론\n
+결론적으로...`
+                },
+                howto: {
+                    title: '[문제] 해결하는 방법',
+                    content: `## 문제 상황\n
+다음과 같은 문제를 경험하셨나요?\n
+## 해결 방법\n
+### 방법 1: 기본 해결책\n
+먼저 시도해볼 수 있는 방법은...\n
+### 방법 2: 고급 해결책\n
+만약 위 방법이 효과가 없다면...\n
+## 예방 방법\n
+향후 비슷한 문제를 방지하려면...`
+                },
+                listicle: {
+                    title: '[주제]에 대한 N가지 팁',
+                    content: `## 서론\n
+오늘은 [주제]에 대한 유용한 팁들을 공유합니다.\n
+## 1. 첫 번째 팁\n
+가장 중요한 것은...\n
+## 2. 두 번째 팁\n
+다음으로 고려해야 할 점은...\n
+## 3. 세 번째 팁\n
+많은 사람들이 놀치는 부분은...\n
+## 결론\n
+이러한 팁들을 활용하면...`
+                },
+                review: {
+                    title: '[제품/서비스] 리뷰',
+                    content: `## 개요\n
+오늘 리뷰할 제품은...\n
+## 장점\n
+### 1. 훌륭한 성능\n
+가장 인상적인 부분은...\n
+### 2. 합리적인 가격\n
+가격 대비 성능이...\n
+## 단점\n
+### 1. 개선이 필요한 부분\n
+아쉽게도...\n
+## 총평\n
+전체적으로... ★★★★☆ (4/5)`
+                },
+                news: {
+                    title: '[오늘의 뉴스] 제목',
+                    content: `## 주요 내용\n
+오늘 발표된 내용에 따르면...\n
+## 배경\n
+이번 발표의 배경은...\n
+## 영향\n
+이로 인해 예상되는 변화는...\n
+## 전문가 의견\n
+관련 전문가들은...\n
+## 앞으로의 전망\n
+향후...`
+                }
+            };
+            
+            const template = templates[templateType];
+            if (template) {
+                // 스마트 에디터 탭으로 이동
+                showTab('smart-write');
+                
+                // 템플릿 내용 적용
+                document.getElementById('smartPostTitle').value = template.title;
+                document.getElementById('smartPostContent').innerHTML = template.content.replace(/\n/g, '<br>');
+                
+                showToast(`${templateType} 템플릿이 적용되었습니다.`);
+            }
+        }
+        
+        function createTemplate() {
+            const name = prompt('템플릿 이름을 입력하세요:');
+            if (name) {
+                const templates = JSON.parse(localStorage.getItem('blog_templates') || '[]');
+                templates.push({
+                    id: Date.now(),
+                    name: name,
+                    content: document.getElementById('smartPostContent').innerHTML,
+                    created: new Date().toISOString()
+                });
+                localStorage.setItem('blog_templates', JSON.stringify(templates));
+                loadTemplates();
+                showToast('템플릿이 저장되었습니다.');
+            }
+        }
+        
+        function loadTemplates() {
+            const templates = JSON.parse(localStorage.getItem('blog_templates') || '[]');
+            const container = document.getElementById('myTemplates');
+            
+            if (templates.length > 0) {
+                container.innerHTML = templates.map(template => `
+                    <div style="padding: 15px; background: white; border-radius: 8px; margin-bottom: 10px; cursor: pointer;" onclick="applyCustomTemplate('${template.id}')">
+                        <h4 style="margin: 0 0 5px 0;">${template.name}</h4>
+                        <small style="color: #666;">${new Date(template.created).toLocaleDateString()}</small>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<p style="text-align: center; color: #999;">저장된 템플릿이 없습니다.</p>';
+            }
+        }
+        
+        // 톤 매니저 관련 함수들
+        function updateToneValue(type, value) {
+            document.getElementById(`${type}Value`).textContent = value;
+            updateTonePreview();
+        }
+        
+        function updateTonePreview() {
+            const formality = document.getElementById('formalityRange').value;
+            const emotion = document.getElementById('emotionRange').value;
+            const expertise = document.getElementById('expertiseRange').value;
+            const length = document.getElementById('lengthRange').value;
+            
+            let preview = '';
+            
+            if (formality < 30) {
+                preview = '안녕! 오늘은 정말 멋진 주제로 이야기해볼게. ';
+            } else if (formality > 70) {
+                preview = '안녕하십니까. 오늘 다루고자 하는 주제는 매우 중요한 의미를 가지고 있습니다. ';
+            } else {
+                preview = '안녕하세요. 오늘은 흥미로운 주제를 다룰 예정입니다. ';
+            }
+            
+            if (emotion > 70) {
+                preview += '정말 신나는 이야기인데, 여러분도 분명 좋아하실 거예요! ';
+            }
+            
+            if (expertise > 70) {
+                preview += '전문적인 관점에서 분석하면, 이 주제는 다양한 학술적 함의를 담고 있습니다. ';
+            } else if (expertise < 30) {
+                preview += '누구나 쉽게 이해할 수 있도록 최대한 쉽게 설명해볼게요. ';
+            }
+            
+            if (length > 70) {
+                preview += '이제부터 하나하나 자세히 살펴보겠습니다. 먼저 배경부터 설명하면, 이 주제가 중요한 이유는... ';
+            } else if (length < 30) {
+                preview += '핵심만 간단히! ';
+            }
+            
+            document.getElementById('tonePreview').textContent = preview;
+        }
+        
+        function applyTonePreset(preset) {
+            const presets = {
+                professional: { formality: 80, emotion: 20, expertise: 90, length: 70 },
+                friendly: { formality: 30, emotion: 70, expertise: 50, length: 60 },
+                educational: { formality: 60, emotion: 40, expertise: 80, length: 90 },
+                casual: { formality: 20, emotion: 80, expertise: 30, length: 40 }
+            };
+            
+            const settings = presets[preset];
+            if (settings) {
+                document.getElementById('formalityRange').value = settings.formality;
+                document.getElementById('emotionRange').value = settings.emotion;
+                document.getElementById('expertiseRange').value = settings.expertise;
+                document.getElementById('lengthRange').value = settings.length;
+                
+                // 값 표시 업데이트
+                Object.keys(settings).forEach(key => {
+                    updateToneValue(key, settings[key]);
+                });
+                
+                showToast(`${preset} 톤이 적용되었습니다.`);
+            }
+        }
+        
+        function resetTone() {
+            document.getElementById('formalityRange').value = 50;
+            document.getElementById('emotionRange').value = 50;
+            document.getElementById('expertiseRange').value = 70;
+            document.getElementById('lengthRange').value = 60;
+            
+            ['formality', 'emotion', 'expertise', 'length'].forEach(type => {
+                updateToneValue(type, document.getElementById(`${type}Range`).value);
+            });
+            
+            showToast('톤 설정이 초기화되었습니다.');
+        }
+        
+        // 리서치 관련 함수들
+        function startResearch() {
+            const topic = document.getElementById('researchTopic').value;
+            const depth = document.getElementById('researchDepth').value;
+            
+            if (!topic) {
+                alert('리서치 주제를 입력해주세요.');
+                return;
+            }
+            
+            // 진행 상황 표시
+            document.getElementById('researchProgress').style.display = 'block';
+            document.getElementById('researchResults').style.display = 'none';
+            
+            let progress = 0;
+            const progressBar = document.getElementById('researchProgressBar');
+            const status = document.getElementById('researchStatus');
+            
+            // 진행 상황 시뮬레이션
+            const steps = [
+                { progress: 20, text: '웹 검색 중...' },
+                { progress: 40, text: '관련 문서 분석 중...' },
+                { progress: 60, text: '학술 자료 검토 중...' },
+                { progress: 80, text: '결과 정리 중...' },
+                { progress: 100, text: '완료!' }
+            ];
+            
+            let stepIndex = 0;
+            const interval = setInterval(() => {
+                if (stepIndex < steps.length) {
+                    const step = steps[stepIndex];
+                    progressBar.style.width = step.progress + '%';
+                    status.textContent = step.text;
+                    stepIndex++;
+                } else {
+                    clearInterval(interval);
+                    showResearchResults(topic);
+                }
+            }, 1000);
+        }
+        
+        function showResearchResults(topic) {
+            document.getElementById('researchProgress').style.display = 'none';
+            document.getElementById('researchResults').style.display = 'block';
+            
+            // 시뮬레이션된 결과
+            document.getElementById('researchSummary').innerHTML = `
+                <h4>핵심 요약</h4>
+                <p>"${topic}"에 대한 리서치 결과입니다:</p>
+                <ul>
+                    <li>현재 가장 주목받는 트렌드는 ${topic} 관련 새로운 기술 발표입니다</li>
+                    <li>주요 기업들이 이 분야에 적극 투자하고 있습니다</li>
+                    <li>전문가들은 향후 2-3년 내 큰 변화가 예상된다고 예측합니다</li>
+                </ul>
+            `;
+            
+            document.getElementById('researchSources').innerHTML = `
+                <a href="#" style="display: block; padding: 10px; background: white; border-radius: 5px; margin-bottom: 10px; text-decoration: none; color: #333;">
+                    <strong>Wikipedia: ${topic}</strong>
+                    <br><small>기본 개념과 역사</small>
+                </a>
+                <a href="#" style="display: block; padding: 10px; background: white; border-radius: 5px; margin-bottom: 10px; text-decoration: none; color: #333;">
+                    <strong>arXiv: Recent papers on ${topic}</strong>
+                    <br><small>최신 연구 논문</small>
+                </a>
+                <a href="#" style="display: block; padding: 10px; background: white; border-radius: 5px; text-decoration: none; color: #333;">
+                    <strong>TechCrunch: ${topic} News</strong>
+                    <br><small>최신 뉴스와 동향</small>
+                </a>
+            `;
+            
+            showToast('리서치가 완료되었습니다.');
+        }
+        
+        // 팩트체크 관련 함수들
+        function runFactCheck() {
+            const content = document.getElementById('factCheckContent').value;
+            
+            if (!content || content === '팩트체크가 필요한 내용을 입력하세요...') {
+                alert('검증할 내용을 입력해주세요.');
+                return;
+            }
+            
+            // 결과 표시
+            document.getElementById('factCheckResults').style.display = 'block';
+            
+            // 시뮬레이션된 결과 (실제로는 API를 사용해야 함)
+            showToast('팩트체크가 완료되었습니다.');
+        }
+        
+        function clearFactCheck() {
+            document.getElementById('factCheckContent').value = '';
+            document.getElementById('factCheckResults').style.display = 'none';
+            showToast('팩트체크가 초기화되었습니다.');
+        }
+        
         // 탭 전환
         function showTab(tabName) {
             // 모든 패널 숨기기
@@ -2145,6 +2770,18 @@ ${dashboard.getPopularPosts().map((post, i) => `${i+1}. ${post.title} (${post.vi
                     break;
                 case 'ideas-board':
                     loadIdeas();
+                    break;
+                case 'templates':
+                    loadTemplates();
+                    break;
+                case 'tone-manager':
+                    updateTonePreview();
+                    break;
+                case 'research':
+                    // Research panel
+                    break;
+                case 'fact-check':
+                    // Fact check panel
                     break;
             }
         }
