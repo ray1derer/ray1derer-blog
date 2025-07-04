@@ -206,33 +206,6 @@ class EnhancedCategoryManager {
         html += '</ul>';
         return html;
     }
-    
-    // 사이드바용 간단한 카테고리 트리 렌더링
-    renderSidebarCategoryTree(categories = this.categories, level = 0) {
-        let html = '';
-        
-        for (const category of categories) {
-            const hasChildren = category.children && category.children.length > 0;
-            const icon = hasChildren ? 'fa-folder-open' : 'fa-folder';
-            const indent = 35 + (level * 15);
-            
-            html += `
-                <li>
-                    <a href="#" onclick="filterByCategory('${category.id}')" style="padding-left: ${indent}px;">
-                        <i class="fas ${icon}" style="font-size: 12px;"></i> 
-                        ${category.name} 
-                        <span style="color: #7f8c8d; font-size: 11px;">(${category.count})</span>
-                    </a>
-                </li>
-            `;
-            
-            if (hasChildren) {
-                html += this.renderSidebarCategoryTree(category.children, level + 1);
-            }
-        }
-        
-        return html;
-    }
 }
 
 // 전역 함수들
